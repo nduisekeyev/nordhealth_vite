@@ -1,6 +1,6 @@
 import { JWT } from "@/types";
 
-const BASE_API_URL = "http://localhost:8000";
+const BASE_API_URL = "https://nordhealth-server.vercel.app";
 
 class AuthService {
   async login(email: string, password: string) {
