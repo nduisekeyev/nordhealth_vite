@@ -1,0 +1,22 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  block-size: 100vh;
+  margin: 0;
+}
+
+body {
+  font-family: var(--n-font-family);
+  background-color: var(--n-color-surface-raised);
+}
+
+#app {
+  block-size: 100%;
+}
