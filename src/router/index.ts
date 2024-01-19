@@ -10,12 +10,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/products",
     component: () => import("@/views/Products.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, allowedRoles: ["admin", "user"] },
   },
   {
     path: "/dashboard",
     component: () => import("@/views/Dashboard.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, allowedRoles: ["admin"] },
   },
   // Add a catch-all route for 404
   {
@@ -32,18 +32,25 @@ const router = createRouter({
 router.beforeEach((to, _from, next) => {
   // Check if the route requires authentication
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    // Check if the user is authenticated
-    if (store.getters.isAuthenticated || localStorage.getItem("user")) {
-      // Proceed to the route
-      next();
-    } else {
-      // Redirect to the login page or another authentication route
-      next({ path: "/" });
-    }
-  } else {
-    // If the route does not require authentication, proceed
-    next();
-  }
+    const isAuthenticated =
+      store.getters.isAuthenticated || localStorage.getItem("user");
+
+    if (isAuthenticated) {
+      // Check the user's role
+      const userRole = store.getters.currentUser?.role;
+
+      // Check if the user has the required role for the route
+      if (
+        to.meta.allowedRoles &&
+        (to.meta.allowedRoles as string[]).includes(userRole)
+      ) {
+        next();
+      } else {
+        // Redirect to a route indicating insufficient permissions
+        next({ path: "/products" });
+      }
+    } else next({ path: "/" });
+  } else next();
 });
 
 export default router;

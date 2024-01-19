@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import Logout from "@/components/Logout.vue";
 import Profile from "@/components/Profile.vue";
+import { computed } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore();
+const role = computed(() => store.getters.currentUser?.role);
 </script>
 
 <template>
@@ -69,7 +74,7 @@ import Profile from "@/components/Profile.vue";
         <nord-dropdown-item>Sign out from all clinics</nord-dropdown-item>
       </nord-dropdown>
       <nord-nav-group heading="Workspace">
-        <router-link to="/dashboard">
+        <router-link to="/dashboard" v-if="role === 'admin'">
           <nord-nav-item
             :active="$route.path === '/dashboard'"
             icon="navigation-dashboard"

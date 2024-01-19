@@ -31,6 +31,8 @@ export default defineConfig({
               "nord-command-menu",
               "nord-dropdown-item",
               "nord-dropdown-group",
+              "nord-spinner",
+              "nord-table",
             ].includes(tag),
         },
       },

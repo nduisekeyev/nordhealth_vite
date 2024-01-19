@@ -2,7 +2,7 @@
 import Toast from "@/components/Toast.vue";
 import { validateEmail, validatePassword } from "@/utils/validation";
 import type { Input } from "@nordhealth/components";
-import { computed, reactive, ref, watchEffect } from "vue";
+import { computed, reactive, ref, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
@@ -11,6 +11,7 @@ const router = useRouter();
 const isPasswordVisible = ref<boolean>(false);
 
 const isAuthenticated = computed(() => store.getters.isAuthenticated);
+const role = computed(() => store.getters.currentUser?.role);
 const error = computed(() => store.getters.error);
 
 // helper for demo purposes
@@ -65,10 +66,11 @@ function login(email: string, password: string) {
   });
 }
 
-watchEffect(() => {
-  if (isAuthenticated.value) {
-    // Use router.push for navigation in a Composition API setup
+watch([isAuthenticated, role], ([auth, userRole]) => {
+  if (auth && userRole === "admin") {
     router.push("/dashboard");
+  } else if (auth && userRole === "user") {
+    router.push("/products");
   }
 });
 </script>
