@@ -5,15 +5,15 @@ interface ValidationInput {
   focus?: () => void;
 }
 
-export function validateEmail(username: ValidationInput): boolean {
+export function validateEmail(email: ValidationInput): boolean {
   const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-  if (emailRegex.test(username.value)) {
-    username.error = "";
+  if (emailRegex.test(email.value)) {
+    email.error = "";
     return true;
   } else {
-    username.error = "Please enter a valid email address";
-    username.focus();
+    email.error = "Please enter a valid email address";
+    email.focus();
     return false;
   }
 }
