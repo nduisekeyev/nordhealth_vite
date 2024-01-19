@@ -48,8 +48,14 @@ function handleSubmit() {
   const passwordRegex =
     /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
-  if (!username.valid) {
-    username.error = "Please enter a username";
+  const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+  if (emailRegex.test(username.value)) {
+    username.error = "";
+  }
+
+  if (!emailRegex.test(username.value)) {
+    username.error = "Please enter a valid email address";
     username.focus();
   }
 
