@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Toast from "@/components/Toast.vue";
+import { validateEmail, validatePassword } from "@/utils/validation";
 import type { Input } from "@nordhealth/components";
 import { computed, reactive, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
@@ -37,7 +38,7 @@ function useField(initialValue = "") {
   });
 }
 
-const username = useField();
+const email = useField();
 const password = useField();
 
 function showPassword() {
@@ -45,45 +46,21 @@ function showPassword() {
 }
 
 function handleSubmit() {
-  const passwordRegex =
-    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+  const isValidEmail = validateEmail(email);
+  const isValidPassword = validatePassword(password);
 
-  const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-  if (emailRegex.test(username.value)) {
-    username.error = "";
-  }
-
-  if (!emailRegex.test(username.value)) {
-    username.error = "Please enter a valid email address";
-    username.focus();
-  }
-
-  if (password.value.length < 8 || !passwordRegex.test(password.value)) {
-    password.error =
-      "Password must be at least 8 characters and include at least one symbol.";
-    password.focus();
-  }
-
-  // Additional validation for password
-  if (
-    username.valid &&
-    password.valid &&
-    password.value.length >= 8 &&
-    passwordRegex.test(password.value)
-  ) {
-    password.error = "";
-    login(username.value, password.value);
+  if (isValidEmail && isValidPassword && email.valid && password.valid) {
+    login(email.value, password.value);
   }
 }
 
-function login(username: string, password: string) {
+function login(email: string, password: string) {
   // Encode the password to base64
   const encodedPassword = btoa(password);
 
   // Dispatch login action
   store.dispatch("login", {
-    username: username,
+    email,
     password: encodedPassword,
   });
 }
@@ -102,15 +79,15 @@ watchEffect(() => {
     <form action="#" @submit.prevent="handleSubmit">
       <nord-stack>
         <nord-input
-          label="Username"
+          label="Email"
           expand
           type="email"
           required
-          name="username"
+          name="email"
           placeholder="Email"
-          :ref="username.setRef"
-          :error="username.error"
-          v-model="username.value"
+          :ref="email.setRef"
+          :error="email.error"
+          v-model="email.value"
         />
 
         <div class="password">
