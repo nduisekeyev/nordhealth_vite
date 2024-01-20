@@ -6,9 +6,18 @@ import { useStore } from "vuex";
 
 const store = useStore();
 const role = computed(() => store.getters.currentUser?.role);
+const is_updates_on = computed(() => store.getters.currentUser?.is_updates_on);
 </script>
 
 <template>
+  <nord-notification-group v-if="is_updates_on">
+    <nord-notification>
+      <h2>Updates and Announcement</h2>
+      <p>The service subscription is currently active.</p>
+      <a href="#">Learn more</a>
+    </nord-notification>
+  </nord-notification-group>
+
   <nord-layout>
     <nord-navigation slot="nav">
       <nord-dropdown slot="header" expand>
@@ -118,5 +127,6 @@ const role = computed(() => store.getters.currentUser?.role);
       </nord-card>
     </nord-stack>
   </nord-layout>
+
   <nord-command-menu></nord-command-menu>
 </template>
