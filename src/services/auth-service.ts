@@ -3,14 +3,14 @@ import { JWT } from "@/types";
 const BASE_API_URL = "https://nordhealth-server.vercel.app";
 
 class AuthService {
-  async login(email: string, password: string) {
+  async login(email: string, password: string, updates: boolean) {
     try {
       const response = await fetch(`${BASE_API_URL}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, updates }),
       });
       if (!response.ok) {
         let errorMessage = "Authentication failed. ";

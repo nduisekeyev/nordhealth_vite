@@ -4,6 +4,7 @@ import { createStore } from "vuex";
 interface User {
   email: string;
   password: string;
+  updates?: boolean;
 }
 
 interface RootState {
@@ -34,7 +35,7 @@ export default createStore<RootState>({
   actions: {
     login({ commit }, user: User) {
       // If successful, commit the user to the store
-      return AuthService.login(user.email, user.password).then(
+      return AuthService.login(user.email, user.password, user.updates).then(
         (user) => {
           console.log("setUser", user);
           commit("setUser", user);

@@ -41,9 +41,14 @@ function useField(initialValue = "") {
 
 const email = useField();
 const password = useField();
+const checkedUpdates = ref<boolean>(false);
 
 function showPassword() {
   isPasswordVisible.value = !isPasswordVisible.value;
+}
+
+function handleUpdatesChange() {
+  checkedUpdates.value = !checkedUpdates.value;
 }
 
 function handleSubmit() {
@@ -51,11 +56,11 @@ function handleSubmit() {
   const isValidPassword = validatePassword(password);
 
   if (isValidEmail && isValidPassword && email.valid && password.valid) {
-    login(email.value, password.value);
+    login(email.value, password.value, checkedUpdates.value);
   }
 }
 
-function login(email: string, password: string) {
+function login(email: string, password: string, updates: boolean) {
   // Encode the password to base64
   const encodedPassword = btoa(password);
 
@@ -63,6 +68,7 @@ function login(email: string, password: string) {
   store.dispatch("login", {
     email,
     password: encodedPassword,
+    updates,
   });
 }
 
@@ -119,7 +125,10 @@ watch([isAuthenticated, role], ([auth, userRole]) => {
         </div>
 
         <div class="checkbox">
-          <nord-checkbox label="Updates and Announcements" value="true" />
+          <nord-checkbox
+            label="Updates and Announcements"
+            @focus="handleUpdatesChange"
+          />
         </div>
 
         <nord-button type="submit" expand variant="primary">
