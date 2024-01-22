@@ -10,6 +10,7 @@ interface User {
 interface RootState {
   user: User | null;
   isAuthenticated: boolean;
+  isNotified: boolean;
   error: string | null;
 }
 
@@ -20,6 +21,7 @@ export default createStore<RootState>({
     user: null || savedUser,
     isAuthenticated: !!savedUser,
     error: null,
+    isNotified: true,
   },
   mutations: {
     setUser(state, user: User) {
@@ -30,6 +32,9 @@ export default createStore<RootState>({
     },
     setUserFailure(state, error: string) {
       state.error = error;
+    },
+    setNotification(state, value) {
+      state.isNotified = value;
     },
   },
   actions: {
@@ -53,9 +58,13 @@ export default createStore<RootState>({
       await AuthService.logout(accessToken);
       commit("setUser", null);
     },
+    notify({ commit }, value: boolean) {
+      commit("setNotification", value);
+    },
   },
   getters: {
     isAuthenticated: (state) => state.isAuthenticated,
+    isNotified: (state) => state.isNotified,
     currentUser: (state) => state.user,
     error: (state) => state.error,
   },

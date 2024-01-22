@@ -1,16 +1,35 @@
 <script setup lang="ts">
 import Logout from "@/components/Logout.vue";
 import Profile from "@/components/Profile.vue";
-import { computed } from "vue";
+import { computed, ref, watchEffect } from "vue";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 const store = useStore();
+const router = useRouter();
+
+// Computed properties
 const role = computed(() => store.getters.currentUser?.role);
 const is_updates_on = computed(() => store.getters.currentUser?.is_updates_on);
+const isNotified = computed(() => store.getters.isNotified);
+
+// Ref for the previous route path
+const previousRoutePath = ref<string>("");
+
+router.beforeEach((_to, from, next) => {
+  previousRoutePath.value = from.fullPath;
+  next();
+});
+
+// Watch for route changes
+watchEffect(() => {
+  if (previousRoutePath.value === router.currentRoute.value.fullPath)
+    store.dispatch("notify", false);
+});
 </script>
 
 <template>
-  <nord-notification-group v-if="is_updates_on">
+  <nord-notification-group v-if="is_updates_on && isNotified">
     <nord-notification>
       <h2>Updates and Announcement</h2>
       <p>The service subscription is currently active.</p>
